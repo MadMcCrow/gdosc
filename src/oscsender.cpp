@@ -1,13 +1,5 @@
-/*
- * See the LICENSE file at the root directory for license information
- */
-
-/*
- * File:   oscsender.cpp
- * Author: frankiezafe
- *
- * Created on December 10, 2018, 1:21 PM
- */
+/// Copyright (c) 2023 Noé Perard-Gayot (MadMcCrow), François Zajéga (frankiezafe) & Michal Seta (djiamnot)
+/// This work is licensed under the terms of the MIT license. For a copy see <https://opensource.org/licenses/MIT>
 
 #include "oscsender.h"
 
@@ -231,5 +223,4 @@ void oscsender::send() {
         _packet_closed = true;
     }
     _socket->Send(_packet->Data(), _packet->Size());
-
 }

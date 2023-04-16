@@ -1,19 +1,13 @@
-/*
- * See the LICENSE file at the root directory for license information
- */
-
-/*
- * File:   oscmsg.h
- * Author: frankiezafe
- *
- * Created on December 10, 2018, 5:52 PM
- */
+/// Copyright (c) 2023 Noé Perard-Gayot (MadMcCrow), François Zajéga (frankiezafe) & Michal Seta (djiamnot)
+/// This work is licensed under the terms of the MIT license. For a copy see <https://opensource.org/licenses/MIT>
 
 #ifndef OSCMSG_H
 #define OSCMSG_H
 
-#include <Godot.hpp>
-#include <Node.hpp>
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/node.hpp>
+
+// TODO : IWYU
 
 #include <OscTypes.h>
 #include <UdpSocket.h>
@@ -28,11 +22,13 @@ namespace osc {
     public:
 
         bool valid;
+        // TODO : replace with more sensible data structure 
         godot::Dictionary data;
 
         oscmsg_data() : valid(false) {
         }
 
+        // TODO : move to CPP
         oscmsg_data(
                 const osc::ReceivedMessage& m,
                 const IpEndpointName& rep) {

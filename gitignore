@@ -1,0 +1,16 @@
+#!/usr/bin/git
+
+# compilation files
+## binaries
+.bin
+## build objects
+.o
+.a
+
+# NIX
+## result from `nix build`
+result
+
+# MacOS
+## Store file
+.DS_Store

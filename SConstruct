@@ -1,53 +1,54 @@
-#!python
+#!/usr/bin/env python
 import os
+import sys
 
-target = ARGUMENTS.get("target", "debug")
-platform = ARGUMENTS.get("platform", "windows")
-bits = ARGUMENTS.get("bits", 64)
+# Godot-cpp gives us the base SConscript to include
+env = SConscript("godot-cpp/SConstruct")
+env.Append(CPPPATH=['.', 'src/', 'oscpack/', 'oscpack/osc/', 'oscpack/ip/'])
 
-final_lib_path = 'demo/addons/gdosc/bin/'
-ip_path = 'oscpack/ip/posix/'
+# outpath defines the path we'll use for producing our library
+out_path = ("bin/")
 
-# This makes sure to keep the session environment variables on windows, 
-# that way you can run scons in a vs 2017 prompt and it will find all the required tools
-env = Environment()
-
-def add_sources(sources, directory):
-	for file in os.listdir(directory):
-		if file.endswith('.cpp'):
-			sources.append(directory + '/' + file)
-
-if platform == "osx":
-	env.Append(CCFLAGS = ['-g','-O3', '-arch', 'x86_64', '-std=c++14'])
-	env.Append(LINKFLAGS = ['-arch', 'x86_64'])
-	final_lib_path = final_lib_path + 'osx/'
-
-elif platform == "linux":
-	env.Append(CCFLAGS = ['-fPIC', '-g','-O3', '-std=c++14'])
-	final_lib_path = final_lib_path + 'x11/'
-
-elif platform == "windows":
-	env = Environment(ENV = os.environ)
-	if target == "debug":
-		env.Append(CCFLAGS = ['-EHsc', '-D_DEBUG', '/MDd', '-DOSC_HOST_LITTLE_ENDIAN'])
-	else:
-		env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '/MD', '-DOSC_HOST_LITTLE_ENDIAN'])
-	ip_path = 'oscpack/ip/win32/'
-	final_lib_path = final_lib_path + 'win' + str(bits) + '/'
-
-env.Append(CPPPATH=['.', 'src/', 'oscpack/', 'oscpack/osc/', 'oscpack/ip/', ip_path, "godot-cpp/godot_headers/", 'godot-cpp/include/', 'godot-cpp/include/core/'])
-env.Append(LIBPATH="godot-cpp/bin")
-
-if platform == "windows":
-	env.Append(LIBS=["godot-cpp" + "." + platform + "." + str(bits), "ws2_32", "wsock32", "winmm"])
-else:
-	env.Append(LIBS=["godot-cpp" + "." + platform + "." + str(bits)])
-
+# Common sources
 sources = []
-add_sources(sources, "src")
-add_sources(sources, "oscpack/osc")
-add_sources(sources, "oscpack/ip")
-add_sources(sources, ip_path)
+sources = Glob("src/*.cpp")
+sources.append(Glob("oscpack/osc/*.cpp"))
+sources.append(Glob("oscpack/ip/*.cpp"))
 
-library = env.SharedLibrary(target=final_lib_path + 'libgdosc', source=sources)
+# storing in local variables for later :
+platform = env["platform"]
+target = env["target"]
+suffix = env["suffix"]
+shlib  = env["SHLIBSUFFIX"]
+
+# Linux Build
+if platform in ["linuxbsd", "linux"]:
+    env.Append(CCFLAGS = ['-fPIC', '-g','-O3', '-std=c++17'])
+    sources.append(Glob("oscpack/ip/posix/*.cpp"))
+    library = env.SharedLibrary( f"demo/bin/libgdosc{suffix}{shlib}", source=sources)
+# MacOS build (not called darwin for some reason !)
+elif platform  == "macos":
+    # these flags won't work on aarch64
+    # TODO : aarch64 build and maybe move to a newer std (c++20 ?) 
+    env.Append(CCFLAGS = ['-g','-O3', '-arch', 'x86_64', '-std=c++17'])
+    env.Append(LINKFLAGS = ['-arch', 'x86_64'])
+    sources.append(Glob("oscpack/ip/posix/*.cpp"))
+    library = env.SharedLibrary(f"{out_path}/libgdosc.{platform}.{target}.framework/libgdosc.{platform}.{target}", source=sources)
+
+else: # platform  == "windows":
+
+    if target == "debug":
+        env.Append(CCFLAGS = ['-EHsc', '-D_DEBUG', '/MDd', '-DOSC_HOST_LITTLE_ENDIAN'])
+    else:
+        env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '/MD', '-DOSC_HOST_LITTLE_ENDIAN'])\
+    
+    # add libraries :
+    env.Append(LIBS=["ws2_32", "wsock32", "winmm"])
+    sources.append(Glob("oscpack/ip/win32/*.cpp"))
+    library = env.SharedLibrary(
+        f"{out_path}/libgdosc{suffix}{shlib}",
+        source=sources
+    )
+
+# Just build !
 Default(library)
