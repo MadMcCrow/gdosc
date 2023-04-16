@@ -16,14 +16,17 @@
 #include <OscPacketListener.h>
 #include <OscOutboundPacketStream.h>
 
+using namespace godot;
+
 namespace osc {
 
+    // TODO : possibly move this to CPP
     class oscmsg_data {
     public:
 
         bool valid;
         // TODO : replace with more sensible data structure 
-        godot::Dictionary data;
+        Dictionary data;
 
         oscmsg_data() : valid(false) {
         }
@@ -33,14 +36,14 @@ namespace osc {
                 const osc::ReceivedMessage& m,
                 const IpEndpointName& rep) {
 
-            data[ "address" ] = godot::String(m.AddressPattern());
-            data[ "typetag" ] = godot::String(m.TypeTags());
+            data[ "address" ] = String(m.AddressPattern());
+            data[ "typetag" ] =   String(m.TypeTags());
             char endpointHost[IpEndpointName::ADDRESS_STRING_LENGTH];
             rep.AddressAsString(endpointHost);
-            data[ "ip" ] = godot::String(endpointHost);
+            data[ "ip" ] =   String(endpointHost);
             data[ "port" ] = rep.port;
 
-            godot::Array args;
+              Array args;
             try {
                 for (::osc::ReceivedMessage::const_iterator arg = m.ArgumentsBegin(); arg != m.ArgumentsEnd();
                         ++arg) {
@@ -49,7 +52,7 @@ namespace osc {
                     } else if (arg->IsFloat()) {
                         args.append(arg->AsFloatUnchecked());
                     } else if (arg->IsString()) {
-                        args.append(godot::String(arg->AsStringUnchecked()));
+                        args.append(  String(arg->AsStringUnchecked()));
                     } else if (arg->IsBool()) {
                         args.append(arg->AsBool());
                     } else {
@@ -60,11 +63,11 @@ namespace osc {
             } catch (osc::Exception& e) {
                 // any parsing errors such as unexpected argument types, or
                 // missing arguments get thrown as exceptions.
-                godot::String s = "oscmsg_data, error while parsing message ";
+                  String s = "oscmsg_data, error while parsing message ";
                 s += m.AddressPattern();
                 s += ": ";
                 s += e.what();
-                godot::Godot::print(s);
+                    print(s);
             }
 
             data[ "args" ] = args;
@@ -85,22 +88,22 @@ namespace osc {
 
     };
 
-    class oscmsg : public godot::GodotScript<godot::Object> {
-        GODOT_CLASS(oscmsg)
+    class OSCMsg : public Object {
+        GODOT_CLASS(OSCMsg)
 
     public:
 
         static void _register_methods();
 
-        oscmsg();
+        OSCMsg();
 
-        virtual ~oscmsg();
+        virtual ~OSCMsg();
 
         void buffer_size(int size);
 
-        void address(godot::String address);
+        void address(String address);
 
-        void add(godot::Variant var);
+        void add(Variant var);
 
         void close();
 
@@ -112,7 +115,7 @@ namespace osc {
             return _packet_closed;
         }
 
-        const godot::PoolByteArray& data() const {
+        const   PoolByteArray& data() const {
             return _array;
         }
 
@@ -130,7 +133,7 @@ namespace osc {
         osc::OutboundPacketStream* _packet;
         bool _packet_closed;
 
-        godot::PoolByteArray _array;
+          PoolByteArray _array;
 
         void reset();
 

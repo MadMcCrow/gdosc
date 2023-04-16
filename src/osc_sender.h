@@ -8,24 +8,22 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/node.hpp>
 
-#include "oscmsg.h"
+#include "osc_msg.h"
 
-// potential namespace pollution
-// using namespace godot;
-// check that building with GODOT-CPP works that way
+using namespace godot;
 
 namespace osc {
 
-    class oscsender : public godot::Node {
-        GODOT_CLASS(oscsender, Node)
+    class OSCSender : public godot::Node {
+        GODOT_CLASS(OSCSender, Node)
 
     public:
 
         static void _register_methods();
 
-        oscsender();
+        OSCSender();
 
-        virtual ~oscsender();
+        virtual ~OSCSender();
 
         bool setup(godot::String ip, unsigned int port);
 
@@ -33,9 +31,9 @@ namespace osc {
 
         void stop();
 
-        void msg( godot::String address );
+        void msg( String address );
 
-        void add( godot::Variant var );
+        void add( Variant var );
 
         void send();
 
@@ -44,7 +42,7 @@ namespace osc {
         std::string _ip;
         int _port;
         std::size_t _buffer_size;
-        godot::String _endpoint;
+        String _endpoint;
         bool _ready;
         bool _running;
 

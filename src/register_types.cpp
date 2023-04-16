@@ -8,20 +8,21 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 
-#include "oscmsg.h"
-#include "oscsender.h"
-#include "oscreceiver.h"
+#include "osc_msg.h"
+#include "osc_sender.h"
+#include "osc_receiver.h"
 
 using namespace godot;
+using namespace osc;
 
 void initialize_gdosc_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
 
-    ClassDB::register_class<osc::oscmsg>();
-    ClassDB::register_class<osc::oscsender>();
-    ClassDB::register_class<osc::oscreceiver>();
+    ClassDB::register_class<OSCMsg>();
+    ClassDB::register_class<OSCSender>();
+    ClassDB::register_class<OSCReceiver>();
 }
 
 void uninitialize_gdosc_module(ModuleInitializationLevel p_level) {

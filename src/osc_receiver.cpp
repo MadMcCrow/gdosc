@@ -2,23 +2,27 @@
 /// This work is licensed under the terms of the MIT license. For a copy see <https://opensource.org/licenses/MIT>
 
 #include <map>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <memory>
 
-#include "oscreceiver.h"
+#include "osc_receiver.h"
 
 using namespace std;
 using namespace osc;
 
-void oscreceiver::_register_methods() {
-    register_method("max_queue", &oscreceiver::max_queue);
-    register_method("avoid_duplicate", &oscreceiver::avoid_duplicate);
-    register_method("setup", &oscreceiver::setup);
-    register_method("start", &oscreceiver::start);
-    register_method("stop", &oscreceiver::stop);
-    register_method("has_message", &oscreceiver::has_message);
-    register_method("get_next", &oscreceiver::get_next);
+void OSCReceiver::_register_methods() {
+    register_method("max_queue", &OSCReceiver::max_queue);
+    register_method("avoid_duplicate", &OSCReceiver::avoid_duplicate);
+    register_method("setup", &OSCReceiver::setup);
+    register_method("start", &OSCReceiver::start);
+    register_method("stop", &OSCReceiver::stop);
+    register_method("has_message", &OSCReceiver::has_message);
+    register_method("get_next", &OSCReceiver::get_next);
 }
 
-oscreceiver::oscreceiver() :
+OSCReceiver::OSCReceiver() :
 _port(0),
 _ready(false), _running(false),
 _swap_needed(true), _avoid_duplicate(false),
@@ -29,11 +33,11 @@ _queue_read(0),
 _qread_index(0), _qread_len(0) {
 }
 
-oscreceiver::~oscreceiver() {
+OSCReceiver::~OSCReceiver() {
     stop();
 }
 
-void oscreceiver::max_queue(int max_queue) {
+void OSCReceiver::max_queue(int max_queue) {
 
     if (max_queue < 1) return;
     _lmutex.lock();
@@ -43,7 +47,7 @@ void oscreceiver::max_queue(int max_queue) {
 
 }
 
-void oscreceiver::avoid_duplicate(bool enabled) {
+void OSCReceiver::avoid_duplicate(bool enabled) {
 
     _lmutex.lock();
     _avoid_duplicate = enabled;
@@ -51,10 +55,10 @@ void oscreceiver::avoid_duplicate(bool enabled) {
 
 }
 
-bool oscreceiver::setup(unsigned int port) {
+bool OSCReceiver::setup(unsigned int port) {
 
     if (port <= 0) {
-        godot::Godot::print("Invalid osc::oscreceiver setup: invalid port");
+        WARN_PRINT_ED("Invalid osc::OSCReceiver setup: invalid port");
         return false;
     }
 
@@ -76,11 +80,10 @@ bool oscreceiver::setup(unsigned int port) {
 
 }
 
-bool oscreceiver::start() {
+bool OSCReceiver::start() {
 
     if (!_ready) {
-        godot::Godot::print("oscreceiver::start, receiver is not ready, "
-                "call setup() first!");
+        WARN_PRINT_ED("OSCReceiver::start, receiver is not ready, call setup() first!");
         return false;
     }
 
@@ -90,11 +93,11 @@ bool oscreceiver::start() {
         IpEndpointName name(IpEndpointName::ANY_ADDRESS, _port);
         _lsocket = new UdpListeningReceiveSocket(name, this);
     } catch (const std::exception& e) {
-        godot::String s = "oscreceiver::start, failed to start on ";
+        godot::String s = "OSCReceiver::start, failed to start on ";
         s += godot::String::num(_port);
         s += "\n";
         s += e.what();
-        godot::Godot::print(s);
+        WARN_PRINT_ED(s);
         return false;
     }
 
@@ -106,28 +109,28 @@ bool oscreceiver::start() {
                 _lsocket->Run();
                 std::this_thread::yield();
             } catch (std::exception& e) {
-                godot::String s = "oscreceiver::_lthread, cannot listen ";
+                godot::String s = "OSCReceiver::_lthread, cannot listen ";
                 s += e.what();
-                godot::Godot::print(s);
+                WARN_PRINT_ED(s);
             }
         }
-        godot::String s = "oscreceiver::_lthread, thread is quitting on ";
+        godot::String s = "OSCReceiver::_lthread, thread is quitting on ";
         s += godot::String::num(_port);
-        godot::Godot::print(s);
+        Godot::print(s);
     });
 
     _lthread.detach();
 
     _running = true;
-    godot::String s = "oscreceiver::start, successfully started on ";
+    godot::String s = "OSCReceiver::start, successfully started on ";
     s += godot::String::num(_port);
-    godot::Godot::print(s);
+    Godot::print(s);
 
     return true;
 
 }
 
-void oscreceiver::stop() {
+void OSCReceiver::stop() {
 
     if (_lsocket) {
         _lsocket->Break();
@@ -141,14 +144,14 @@ void oscreceiver::stop() {
 
         _running = false;
 
-        godot::String s = "oscreceiver::stop, stopped on ";
+        godot::String s = "OSCReceiver::stop, stopped on ";
         s += godot::String::num(_port);
-        godot::Godot::print(s);
+        Godot::print(s);
 
     }
 }
 
-void oscreceiver::create_buffers() {
+void OSCReceiver::create_buffers() {
 
     _lmutex.lock();
     if (!_queue_write) {
@@ -159,7 +162,7 @@ void oscreceiver::create_buffers() {
 
 }
 
-void oscreceiver::purge_buffers() {
+void OSCReceiver::purge_buffers() {
 
     if (_queue_write) {
         _queue_write->clear();
@@ -172,7 +175,7 @@ void oscreceiver::purge_buffers() {
 
 }
 
-void oscreceiver::swap_buffers() {
+void OSCReceiver::swap_buffers() {
 
     _queue_read->clear();
 
@@ -187,7 +190,7 @@ void oscreceiver::swap_buffers() {
 
 }
 
-void oscreceiver::ProcessMessage(
+void OSCReceiver::ProcessMessage(
         const osc::ReceivedMessage& m,
         const IpEndpointName& rep) {
 
@@ -201,7 +204,7 @@ void oscreceiver::ProcessMessage(
 
 }
 
-void oscreceiver::check_queue() {
+void OSCReceiver::check_queue() {
 
     _lmutex.lock();
     if (_queue_write && _queue_write->size() > _max_queue) {
@@ -211,7 +214,7 @@ void oscreceiver::check_queue() {
 
 }
 
-void oscreceiver::purge_duplicates() {
+void OSCReceiver::purge_duplicates() {
 
     if ( _queue_read->size() < 2 ) {
         return;
@@ -241,7 +244,7 @@ void oscreceiver::purge_duplicates() {
 
 }
 
-bool oscreceiver::has_message() {
+bool OSCReceiver::has_message() {
 
     if (_swap_needed) {
         swap_buffers();
@@ -260,7 +263,7 @@ bool oscreceiver::has_message() {
 
 }
 
-godot::Dictionary oscreceiver::get_next() {
+godot::Dictionary OSCReceiver::get_next() {
 
     if (_qread_index == _qread_len) {
         return godot::Dictionary();

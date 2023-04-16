@@ -2,23 +2,23 @@
 /// This work is licensed under the terms of the MIT license. For a copy see <https://opensource.org/licenses/MIT>
 
 
-#include "oscmsg.h"
+#include "osc_msg.h"
 
 using namespace osc;
 
-void oscmsg::_register_methods() {
-    register_method("buffer_size", &oscmsg::buffer_size);
-    register_method("address", &oscmsg::address);
-    register_method("add", &oscmsg::add);
-    register_method("close", &oscmsg::close);
-    register_method("data", &oscmsg::data);
-    register_method("size", &oscmsg::size);
-    register_method("ready", &oscmsg::ready);
-    register_method("closed", &oscmsg::closed);
-    register_method("is_oscmsg", &oscmsg::is_oscmsg);
+void OSCMsg::_register_methods() {
+    register_method("buffer_size", &OSCMsg::buffer_size);
+    register_method("address", &OSCMsg::address);
+    register_method("add", &OSCMsg::add);
+    register_method("close", &OSCMsg::close);
+    register_method("data", &OSCMsg::data);
+    register_method("size", &OSCMsg::size);
+    register_method("ready", &OSCMsg::ready);
+    register_method("closed", &OSCMsg::closed);
+    register_method("is_oscmsg", &OSCMsg::is_oscmsg);
 }
 
-oscmsg::oscmsg() :
+OSCMsg::OSCMsg() :
 _buffer_size(1024),
 _buffer(0), _packet(0),
 _packet_closed(false) {
@@ -28,10 +28,10 @@ _packet_closed(false) {
 
 }
 
-oscmsg::~oscmsg() {
+OSCMsg::~OSCMsg() {
 }
 
-void oscmsg::reset() {
+void OSCMsg::reset() {
 
     if (_packet) {
         delete _packet;
@@ -45,10 +45,10 @@ void oscmsg::reset() {
 
 }
 
-void oscmsg::buffer_size(int size) {
+void OSCMsg::buffer_size(int size) {
 
     if (size <= 0) {
-        godot::Godot::print("oscmsg::buffer_size, wrong buffer_size!");
+        WARN_PRINT_ED("OSCMsg::buffer_size, wrong buffer_size!");
         return;
     }
 
@@ -58,7 +58,7 @@ void oscmsg::buffer_size(int size) {
 
 }
 
-void oscmsg::address(godot::String address) {
+void OSCMsg::address(godot::String address) {
 
     reset();
 
@@ -72,10 +72,10 @@ void oscmsg::address(godot::String address) {
 
 }
 
-void oscmsg::add(godot::Variant var) {
+void OSCMsg::add(godot::Variant var) {
 
     if (!_packet) {
-        godot::Godot::print("oscmsg::add, message is not ready! "
+        WARN_PRINT_ED("OSCMsg::add, message is not ready! "
                 "call 'address' first!");
         return;
     }
@@ -142,7 +142,7 @@ void oscmsg::add(godot::Variant var) {
         }
             break;
         default:
-            godot::Godot::print("oscsender::add, unable to add "
+            WARN_PRINT_ED("OSCSender::add, unable to add "
                     "this kind of data!");
             break;
 
@@ -150,7 +150,7 @@ void oscmsg::add(godot::Variant var) {
 
 }
 
-void oscmsg::close() {
+void OSCMsg::close() {
 
     if (!_packet_closed) {
 

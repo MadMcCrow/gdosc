@@ -4,33 +4,31 @@
 #ifndef OSCRECEIVER_H
 #define OSCRECEIVER_H
 
-#include <cstdlib>
-#include <cstring>
+
 #include <deque>
-#include <iostream>
-#include <memory>
 #include <mutex>
 #include <thread>
 
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/node.hpp>
 
-#include "oscmsg.h"
+#include "osc_msg.h"
+
+// we must use this namespace if we want to compile against godot
+using namespace godot;
 
 namespace osc {
 
-    class oscreceiver :
-    public godot::GodotScript<godot::Node>,
-    public osc::OscPacketListener {
-        GODOT_CLASS(oscreceiver)
+class OSCReceiver : public Node, public osc::OscPacketListener {
+        GODOT_CLASS(OSCReceiver)
 
     public:
 
         static void _register_methods();
 
-        oscreceiver();
+        OSCReceiver();
 
-        virtual ~oscreceiver();
+        virtual ~OSCReceiver();
 
         void max_queue(int max_queue);
 
@@ -44,7 +42,7 @@ namespace osc {
 
         bool has_message();
 
-        godot::Dictionary get_next();
+        Dictionary get_next();
 
     protected:
 
