@@ -1,12 +1,17 @@
 /// Copyright (c) 2023 Noé Perard-Gayot (MadMcCrow), François Zajéga (frankiezafe) & Michal Seta (djiamnot)
 /// This work is licensed under the terms of the MIT license. For a copy see <https://opensource.org/licenses/MIT>
 
+// std
 #include <map>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <memory>
 
+// godot
+#include <godot_cpp/variant/utility_functions.hpp>
+
+// gdosc
 #include "osc_receiver.h"
 
 using namespace std;
@@ -116,7 +121,7 @@ bool OSCReceiver::start() {
         }
         godot::String s = "OSCReceiver::_lthread, thread is quitting on ";
         s += godot::String::num(_port);
-        Godot::print(s);
+        UtilityFunctions::print(s);
     });
 
     _lthread.detach();
@@ -124,7 +129,7 @@ bool OSCReceiver::start() {
     _running = true;
     godot::String s = "OSCReceiver::start, successfully started on ";
     s += godot::String::num(_port);
-    Godot::print(s);
+    UtilityFunctions::print(s);
 
     return true;
 
@@ -146,7 +151,7 @@ void OSCReceiver::stop() {
 
         godot::String s = "OSCReceiver::stop, stopped on ";
         s += godot::String::num(_port);
-        Godot::print(s);
+        UtilityFunctions::print(s);
 
     }
 }

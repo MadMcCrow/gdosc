@@ -98,7 +98,11 @@ void OSCSender::stop() {
     if (_socket) {
         delete _socket;
         _socket = 0;
+<<<<<<< HEAD
         Godot::print("OSCSender::stop, socket closed on " + _endpoint);
+=======
+        UtilityFunctions::print("OSCSender::stop, socket closed on " + _endpoint);
+>>>>>>> 5b7c248 (WIP build fixes)
     }
     _running = false;
 

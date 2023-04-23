@@ -24,6 +24,7 @@
       gdosc = buildGdExt.buildExt { 
           extName = "gdosc";
           src = self;
+          nativeBuildInputs = [pkgs.breakpointHook];
         };
         
     in {
@@ -35,8 +36,9 @@
        
       };
       # dev-shell
-      devShells."${system}".default = with pkgs; mkShell {
-         buildInputs = [ gdosc ];
-       };
+      #devShells."${system}".default = with pkgs; mkShell {
+      #   nativeBuildInputs = [breakpointHook cntr] ++ gdosc.nativeBuildInputs;
+      #   buildInputs = [] ++ gdosc.buildInputs;
+      # };
     };
 }
