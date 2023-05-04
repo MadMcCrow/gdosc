@@ -23,6 +23,10 @@
       gdosc = buildGdExt.buildExt { 
           extName = "gdosc";
           src = self;
+          installPhase = ''
+            mkdir -p $out
+            cp bin $out/bin 
+            '';
         };
         
     in {
