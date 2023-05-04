@@ -17,19 +17,21 @@
 using namespace std;
 using namespace osc;
 
-void OSCReceiver::_register_methods() {
-    register_method("max_queue", &OSCReceiver::max_queue);
-    register_method("avoid_duplicate", &OSCReceiver::avoid_duplicate);
-    register_method("setup", &OSCReceiver::setup);
-    register_method("start", &OSCReceiver::start);
-    register_method("stop", &OSCReceiver::stop);
-    register_method("has_message", &OSCReceiver::has_message);
-    register_method("get_next", &OSCReceiver::get_next);
+void OSCReceiver::_bind_methods() {
+
+    ClassDB::bind_method(D_METHOD("max_queue", "max_queue"), &OSCReceiver::max_queue);
+    ClassDB::bind_method(D_METHOD("avoid_duplicate", "enable"), &OSCReceiver::avoid_duplicate);
+    ClassDB::bind_method(D_METHOD("setup", "port"), &OSCReceiver::setup);
+    ClassDB::bind_method(D_METHOD("start"), &OSCReceiver::start);
+    ClassDB::bind_method(D_METHOD("stop"), &OSCReceiver::stop);
+    ClassDB::bind_method(D_METHOD("has_message"), &OSCReceiver::has_message);
+    ClassDB::bind_method(D_METHOD("get_next"), &OSCReceiver::get_next);
+    // TODO : define properties
 }
 
 OSCReceiver::OSCReceiver() :
 _port(0),
-_ready(false), _running(false),
+_is_ready(false), _running(false),
 _swap_needed(true), _avoid_duplicate(false),
 _lsocket(0),
 _max_queue(100),
@@ -75,7 +77,7 @@ bool OSCReceiver::setup(unsigned int port) {
 
     _port = port;
 
-    _ready = true;
+    _is_ready = true;
 
     if (autorestart) {
         return start();
@@ -87,7 +89,7 @@ bool OSCReceiver::setup(unsigned int port) {
 
 bool OSCReceiver::start() {
 
-    if (!_ready) {
+    if (!_is_ready) {
         WARN_PRINT_ED("OSCReceiver::start, receiver is not ready, call setup() first!");
         return false;
     }

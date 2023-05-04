@@ -39,11 +39,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1681659114,
-        "narHash": "sha256-/f7IPk4BPOLuqQqVp2noIV6vATJCv21T2MoCe0H6pc4=",
+        "lastModified": 1682617024,
+        "narHash": "sha256-qaCW+ZM/MC9Zip846WAx2Wo/qO5C0ezhGZZwaBcc5X4=",
         "owner": "MadMcCrow",
         "repo": "godot-flake",
-        "rev": "dcde76c89b25fdf2b81ed81de6ed5be84f72ad4b",
+        "rev": "69ed8e183b8ab9e93a0e3b4fa85495ae6a24f606",
         "type": "github"
       },
       "original": {
@@ -67,10 +67,10 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1678111249,
-        "narHash": "sha256-ZTIbK7vthZwti5XeLZE+twkb4l44q01q2XoLMmmJe94=",
-        "path": "/nix/store/h6mas49w0bwjxsql1fm9j7rr6jrdqvs4-source",
-        "rev": "a028e2873d7fcf44e66b784b4ba061824315537f",
+        "lastModified": 1682453498,
+        "narHash": "sha256-WoWiAd7KZt5Eh6n+qojcivaVpnXKqBsVgpixpV2L9CE=",
+        "path": "/nix/store/wp85jingfav8k5vr5dgqnzgmyp5zc723-source",
+        "rev": "c8018361fa1d1650ee8d4b96294783cf564e8a7f",
         "type": "path"
       },
       "original": {

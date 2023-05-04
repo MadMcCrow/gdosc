@@ -20,11 +20,11 @@ using namespace godot;
 namespace osc {
 
 class OSCReceiver : public Node, public osc::OscPacketListener {
-        GODOT_CLASS(OSCReceiver)
+    GDCLASS(OSCReceiver, Node);
 
     public:
 
-        static void _register_methods();
+        static void _bind_methods();
 
         OSCReceiver();
 
@@ -47,7 +47,7 @@ class OSCReceiver : public Node, public osc::OscPacketListener {
     protected:
 
         int _port;
-        bool _ready;
+        bool _is_ready;
         bool _running;
         bool _swap_needed;
         bool _avoid_duplicate;

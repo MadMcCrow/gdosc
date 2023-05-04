@@ -14,12 +14,12 @@ using namespace godot;
 
 namespace osc {
 
-    class OSCSender : public godot::Node {
-        GODOT_CLASS(OSCSender, Node)
+    class OSCSender : public Node {
+        GDCLASS(OSCSender, Node);
 
     public:
 
-        static void _register_methods();
+        static void _bind_methods();
 
         OSCSender();
 
@@ -43,7 +43,7 @@ namespace osc {
         int _port;
         std::size_t _buffer_size;
         String _endpoint;
-        bool _ready;
+        bool _is_ready;
         bool _running;
 
         UdpTransmitSocket* _socket;

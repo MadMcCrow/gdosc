@@ -2,21 +2,22 @@
 /// This work is licensed under the terms of the MIT license. For a copy see <https://opensource.org/licenses/MIT>
 
 #include "osc_sender.h"
+#include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace osc;
 
-void OSCSender::_register_methods() {
-    register_method("setup", &OSCSender::setup);
-    register_method("start", &OSCSender::start);
-    register_method("stop", &OSCSender::stop);
-    register_method("msg", &OSCSender::msg);
-    register_method("add", &OSCSender::add);
-    register_method("send", &OSCSender::send);
+void OSCSender::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("setup", "ip", "port"), &OSCSender::setup);
+    ClassDB::bind_method(D_METHOD("start"), &OSCSender::start);
+    ClassDB::bind_method(D_METHOD("stop"),  &OSCSender::stop);
+    ClassDB::bind_method(D_METHOD("msg", "address"),  &OSCSender::msg);
+    ClassDB::bind_method(D_METHOD("add", "var"),  &OSCSender::add);
+    ClassDB::bind_method(D_METHOD("send"),  &OSCSender::add);
 }
 
 OSCSender::OSCSender() :
 _port(0), _buffer_size(1024),
-_ready(false), _running(false),
+_is_ready(false), _running(false),
 _socket(0), _buffer(0), _packet(0), _packet_closed(false) {
 }
 
@@ -29,8 +30,7 @@ OSCSender::~OSCSender() {
 
 bool OSCSender::setup(godot::String ip, unsigned int port) {
 
-    std::wstring ws = ip.unicode_str();
-    std::string s(ws.begin(), ws.end());
+    std::string s(ip.utf8().get_data());
     unsigned int p = port;
 
     if (s.empty()) {
@@ -52,7 +52,7 @@ bool OSCSender::setup(godot::String ip, unsigned int port) {
     _port = p;
     _endpoint = ip + ":" + godot::String::num(_port);
 
-    _ready = true;
+    _is_ready = true;
 
     if (autorestart) {
         return start();
@@ -64,7 +64,7 @@ bool OSCSender::setup(godot::String ip, unsigned int port) {
 
 bool OSCSender::start() {
 
-    if (!_ready) {
+    if (!_is_ready) {
         WARN_PRINT_ED("OSCSender::start, failed to start");
         return false;
 
@@ -98,11 +98,7 @@ void OSCSender::stop() {
     if (_socket) {
         delete _socket;
         _socket = 0;
-<<<<<<< HEAD
-        Godot::print("OSCSender::stop, socket closed on " + _endpoint);
-=======
         UtilityFunctions::print("OSCSender::stop, socket closed on " + _endpoint);
->>>>>>> 5b7c248 (WIP build fixes)
     }
     _running = false;
 
@@ -125,9 +121,7 @@ void OSCSender::reset_message() {
 void OSCSender::msg(godot::String address) {
 
     reset_message();
-
-    std::wstring ws = address.unicode_str();
-    std::string std_address(ws.begin(), ws.end());
+    std::string std_address(address.utf8().get_data());
 
     _buffer = new char[_buffer_size];
     _packet = new osc::OutboundPacketStream(_buffer, _buffer_size);
@@ -153,11 +147,11 @@ void OSCSender::add(godot::Variant var) {
             break;
         case godot::Variant::Type::STRING:
         case godot::Variant::Type::NODE_PATH:
-        case godot::Variant::Type::_RID:
+        case godot::Variant::Type::RID:
         case godot::Variant::Type::OBJECT:
         {
             godot::String s = var;
-            (*_packet) << s.alloc_c_string();
+            (*_packet) << s.utf8().get_data();
         }
             break;
         case godot::Variant::Type::INT:
@@ -166,7 +160,7 @@ void OSCSender::add(godot::Variant var) {
             (*_packet) << i;
         }
             break;
-        case godot::Variant::Type::REAL:
+        case godot::Variant::Type::FLOAT:
         {
             float f = var;
             (*_packet) << f;
@@ -187,9 +181,9 @@ void OSCSender::add(godot::Variant var) {
             (*_packet) << float( v.z);
         }
             break;
-        case godot::Variant::Type::QUAT:
+        case godot::Variant::Type::QUATERNION:
         {
-            godot::Quat q = var;
+            godot::Quaternion q = var;
             (*_packet) << float( q.x);
             (*_packet) << float( q.y);
             (*_packet) << float( q.z);

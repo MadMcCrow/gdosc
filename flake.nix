@@ -2,7 +2,6 @@
 {
   description = "gdosc to enable osc in Godot";
   inputs = {
-
     # the godot Engine
     godot-flake = {
       url = "github:MadMcCrow/godot-flake";
@@ -24,10 +23,11 @@
       gdosc = buildGdExt.buildExt { 
           extName = "gdosc";
           src = self;
-          nativeBuildInputs = [pkgs.breakpointHook];
         };
         
     in {
+
+      inherit gdosc;
 
       #interface
       packages."${system}" = with pkgs; {
@@ -36,9 +36,6 @@
        
       };
       # dev-shell
-      #devShells."${system}".default = with pkgs; mkShell {
-      #   nativeBuildInputs = [breakpointHook cntr] ++ gdosc.nativeBuildInputs;
-      #   buildInputs = [] ++ gdosc.buildInputs;
-      # };
+      devShells."${system}".default = buildGdExt.mkExtensionShell  gdosc;
     };
 }

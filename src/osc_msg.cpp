@@ -3,19 +3,22 @@
 
 
 #include "osc_msg.h"
+// Variants
+#include <godot_cpp/variant/variant.hpp>
 
 using namespace osc;
 
-void OSCMsg::_register_methods() {
-    register_method("buffer_size", &OSCMsg::buffer_size);
-    register_method("address", &OSCMsg::address);
-    register_method("add", &OSCMsg::add);
-    register_method("close", &OSCMsg::close);
-    register_method("data", &OSCMsg::data);
-    register_method("size", &OSCMsg::size);
-    register_method("ready", &OSCMsg::ready);
-    register_method("closed", &OSCMsg::closed);
-    register_method("is_oscmsg", &OSCMsg::is_oscmsg);
+void OSCMsg::_bind_methods() {
+    // register all methods
+    ClassDB::bind_method(D_METHOD("buffer_size", "size"), &OSCMsg::buffer_size);
+    ClassDB::bind_method(D_METHOD("address", "address"),  &OSCMsg::address);
+    ClassDB::bind_method(D_METHOD("add", "var"),          &OSCMsg::add);
+    ClassDB::bind_method(D_METHOD("close"),               &OSCMsg::close);
+    ClassDB::bind_method(D_METHOD("data"),                &OSCMsg::data);
+    ClassDB::bind_method(D_METHOD("size"),                &OSCMsg::size);
+    ClassDB::bind_method(D_METHOD("ready"),               &OSCMsg::ready);
+    ClassDB::bind_method(D_METHOD("closed"),              &OSCMsg::closed);
+    ClassDB::bind_method(D_METHOD("is_oscmsg"),           &OSCMsg::is_oscmsg);
 }
 
 OSCMsg::OSCMsg() :
@@ -24,7 +27,7 @@ _buffer(0), _packet(0),
 _packet_closed(false) {
 
     std::cout << this << std::endl;
-    std::cout << this->owner << std::endl;
+    std::cout << this->_owner << std::endl;
 
 }
 
@@ -61,9 +64,7 @@ void OSCMsg::buffer_size(int size) {
 void OSCMsg::address(godot::String address) {
 
     reset();
-
-    std::wstring ws = address.unicode_str();
-    std::string std_address(ws.begin(), ws.end());
+    std::string std_address(address.utf8().get_data());
 
     _buffer = new char[_buffer_size];
     _packet = new osc::OutboundPacketStream(_buffer, _buffer_size);
@@ -89,11 +90,11 @@ void OSCMsg::add(godot::Variant var) {
             break;
         case godot::Variant::Type::STRING:
         case godot::Variant::Type::NODE_PATH:
-        case godot::Variant::Type::_RID:
+        case godot::Variant::Type::RID:
         case godot::Variant::Type::OBJECT:
         {
             godot::String s = var;
-            (*_packet) << s.alloc_c_string();
+            (*_packet) << s.utf8().get_data();
         }
             break;
         case godot::Variant::Type::INT:
@@ -102,7 +103,7 @@ void OSCMsg::add(godot::Variant var) {
             (*_packet) << i;
         }
             break;
-        case godot::Variant::Type::REAL:
+        case godot::Variant::Type::FLOAT:
         {
             float f = var;
             (*_packet) << f;
@@ -123,9 +124,9 @@ void OSCMsg::add(godot::Variant var) {
             (*_packet) << float( v.z);
         }
             break;
-        case godot::Variant::Type::QUAT:
+        case godot::Variant::Type::QUATERNION:
         {
-            godot::Quat q = var;
+            godot::Quaternion q = var;
             (*_packet) << float( q.x);
             (*_packet) << float( q.y);
             (*_packet) << float( q.z);
