@@ -24,20 +24,26 @@
           extName = "gdosc";
           src = self;
           installPhase = ''
-            mkdir -p $out
-            cp bin $out/bin 
+            mkdir -p $out/bin
+            cp bin/libgdosc*.so $out/bin/libgdosc.so
+            cp gdosc.gdextension $out/gdosc.gdextension
             '';
         };
+
+      demo = gdosc.overrideAttrs (oldAttr : {
+        installPhase = oldAttr.installPhase +
+        ''
+          cp demo $out/demo
+          mkdir -p $out/demo/godot/bin
+          cp $out/bin/libgdosc.so $out/demo/godot/bin/libgdosc.so
+        '';
+      });
         
     in {
-
-      inherit gdosc;
-
       #interface
       packages."${system}" = with pkgs; {
-
-        default = gdosc;
-       
+        inherit gdosc;
+        default = demo;
       };
       # dev-shell
       devShells."${system}".default = buildGdExt.mkExtensionShell  gdosc;
