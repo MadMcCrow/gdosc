@@ -18,6 +18,10 @@
       lib = pkgs.lib;
       # get function from other flake
       buildGdExt = inputs.godot-flake.lib.buildGdExt;
+      buildGodot = inputs.godot-flake.lib.buildGodot;
+
+      # godot editor for demo testing
+      godot-editor = buildGodot.mkGodot {withTemplates = false;};
 
       # implementation
       gdosc = buildGdExt.buildExt { 
@@ -31,9 +35,10 @@
         };
 
       demo = gdosc.overrideAttrs (oldAttr : {
+        nativeBuildInputs = oldAttr.nativeBuildInputs ++ [godot-editor];
         installPhase = oldAttr.installPhase +
         ''
-          cp demo $out/demo
+          cp -r demo $out/demo
           mkdir -p $out/demo/godot/bin
           cp $out/bin/libgdosc.so $out/demo/godot/bin/libgdosc.so
         '';
