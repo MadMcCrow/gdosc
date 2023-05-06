@@ -1,24 +1,22 @@
-extends Object
+extends OSCReceiver
 
-var oscrcv
-var cube
+@export var cube : MeshInstance3D
+@export var env  : WorldEnvironment
+
 var sky
 
 func _ready():
 	
-	cube = get_node( "../cube" )
-	sky = get_node( "../env" ).get_environment().background_sky
-	print( sky )
-	oscrcv = load("res://addons/gdosc/bin/gdOscReceiver.gdns").new()
-	oscrcv.max_queue( 20 ) 			# maximum number of messages in the buffer, default is 100
-	oscrcv.avoid_duplicate( true )	# receiver will only keeps the "latest" message for each address
-	oscrcv.setup( 14000 )			# listening to port 14000
-	oscrcv.start()					# starting the reception of messages
+	sky = env.get_environment().background_sky
+	max_queue( 20 ) 			# maximum number of messages in the buffer, default is 100
+	avoid_duplicate( true )	# receiver will only keeps the "latest" message for each address
+	setup( 14000 )			# listening to port 14000
+	start()					# starting the reception of messages
 
 func _process(delta):
 		
-	while( oscrcv.has_message() ): 	# check if there are pending messages
-		var msg = oscrcv.get_next()	# retrieval of the messages as a dictionary
+	while( has_message() ): 	# check if there are pending messages
+		var msg = get_next()	# retrieval of the messages as a dictionary
 		# using message data
 		var args = msg["args"]
 		if msg["address"] == "/cube/pos" and cube != null:
@@ -37,4 +35,4 @@ func _process(delta):
 	pass
 	
 func _exit_tree ( ):
-	oscrcv.stop()					# stops listening to port, highly recommended!
+	stop()					# stops listening to port, highly recommended!

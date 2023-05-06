@@ -12,7 +12,7 @@ void OSCSender::_bind_methods() {
     ClassDB::bind_method(D_METHOD("stop"),  &OSCSender::stop);
     ClassDB::bind_method(D_METHOD("msg", "address"),  &OSCSender::msg);
     ClassDB::bind_method(D_METHOD("add", "var"),  &OSCSender::add);
-    ClassDB::bind_method(D_METHOD("send"),  &OSCSender::add);
+    ClassDB::bind_method(D_METHOD("send"),  &OSCSender::send);
 }
 
 OSCSender::OSCSender() :

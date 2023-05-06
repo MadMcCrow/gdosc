@@ -39,8 +39,11 @@
         installPhase = oldAttr.installPhase +
         ''
           cp -r demo $out/demo
-          mkdir -p $out/demo/godot/bin
-          cp $out/bin/libgdosc.so $out/demo/godot/bin/libgdosc.so
+          mkdir -p $out/demo/godot/bin/x11
+          cp $out/bin/libgdosc.so $out/demo/godot/bin/x11/libgdosc.so
+          cp gdosc.gdextension $out/demo/godot/bin
+          mkdir -p $out/godot-engine/bin
+          cp ${godot-editor}/bin/* $out/godot-engine/bin
         '';
       });
         
@@ -51,6 +54,6 @@
         default = demo;
       };
       # dev-shell
-      devShells."${system}".default = libGDExt.mkExtensionShell  gdosc;
+      devShells."${system}".default = libGDExt.mkExtensionShell gdosc;
     };
 }
