@@ -3,10 +3,12 @@ extends OSCSender
 @export var cube : Node
 
 func _ready():
+	pass
 	setup( "127.0.0.1", 12000 )		# will send messages to ip:port
 	start()							# enabling emission
 
 func _process(delta):
+	pass
 	cube.rotate_y( delta * 1 )
 	msg("/gdosc")					# creation of new message internally
 	add( cube )						# adding an object, will send its name
@@ -16,4 +18,5 @@ func _process(delta):
 	pass
 	
 func _exit_tree ( ):
+	pass
 	stop()							# disable the sender, highly recommended!

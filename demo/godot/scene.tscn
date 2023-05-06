@@ -10,8 +10,10 @@ size = Vector3(2, 2, 2)
 radiance_size = 4
 
 [sub_resource type="Environment" id="4"]
-background_mode = 2
+background_mode = 1
+background_color = Color(0.462745, 0.737255, 0, 1)
 sky = SubResource("3")
+ambient_light_source = 3
 ssao_intensity = 1.0
 
 [node name="root" type="Node3D"]
@@ -29,13 +31,14 @@ transform = Transform3D(0.898086, 0.0547062, 0.436405, -0.43982, 0.111707, 0.891
 light_bake_mode = 1
 directional_shadow_max_distance = 200.0
 
-[node name="osc_sender" type="Node3D" parent="."]
-visible = false
+[node name="osc_sender" type="OSCSender" parent="." node_paths=PackedStringArray("cube")]
 script = ExtResource("1")
+cube = NodePath("../cube")
 
-[node name="osc_receiver" type="Node3D" parent="."]
-visible = false
+[node name="osc_receiver" type="OSCReceiver" parent="." node_paths=PackedStringArray("cube", "env")]
 script = ExtResource("2")
+cube = NodePath("../cube")
+env = NodePath("../env")
 
 [node name="env" type="WorldEnvironment" parent="."]
 environment = SubResource("4")
