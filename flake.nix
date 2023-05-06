@@ -17,14 +17,14 @@
       pkgs = import nixpkgs { inherit system; };
       lib = pkgs.lib;
       # get function from other flake
-      buildGdExt = inputs.godot-flake.lib.buildGdExt;
-      buildGodot = inputs.godot-flake.lib.buildGodot;
+      libGDExt = inputs.godot-flake.lib.libGDExt;
+      libGodot = inputs.godot-flake.lib.libGodot;
 
       # godot editor for demo testing
-      godot-editor = buildGodot.mkGodot {withTemplates = false;};
+      godot-editor = libGodot.mkGodot {withTemplates = false;};
 
       # implementation
-      gdosc = buildGdExt.buildExt { 
+      gdosc = libGDExt.mkGDExt { 
           extName = "gdosc";
           src = self;
           installPhase = ''
@@ -51,6 +51,6 @@
         default = demo;
       };
       # dev-shell
-      devShells."${system}".default = buildGdExt.mkExtensionShell  gdosc;
+      devShells."${system}".default = libGDExt.mkExtensionShell  gdosc;
     };
 }
