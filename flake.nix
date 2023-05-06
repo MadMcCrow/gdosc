@@ -54,6 +54,12 @@
         default = demo;
       };
       # dev-shell
-      devShells."${system}".default = libGDExt.mkExtensionShell gdosc;
+      devShells."${system}".default = (libGDExt.mkExtensionShell gdosc).overrideAttrs (oldAttr:
+      {
+         inputsFrom = [demo];
+         shellHook = oldAttr.shellHook + ''
+            ln -s ${godot-editor}/bin/* 
+         '';
+      });
     };
 }
