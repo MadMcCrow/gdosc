@@ -67,7 +67,7 @@ namespace osc {
                 s += m.AddressPattern();
                 s += ": ";
                 s += e.what();
-                    print(s);
+                    ERR_FAIL_MSG(s);
             }
 
             data[ "args" ] = args;
@@ -89,11 +89,11 @@ namespace osc {
     };
 
     class OSCMsg : public Object {
-        GODOT_CLASS(OSCMsg)
+        GDCLASS(OSCMsg, Object);
 
     public:
 
-        static void _register_methods();
+        static void _bind_methods();
 
         OSCMsg();
 
@@ -115,7 +115,7 @@ namespace osc {
             return _packet_closed;
         }
 
-        const   PoolByteArray& data() const {
+        const   PackedByteArray& data() const {
             return _array;
         }
 
@@ -133,7 +133,7 @@ namespace osc {
         osc::OutboundPacketStream* _packet;
         bool _packet_closed;
 
-          PoolByteArray _array;
+        PackedByteArray _array;
 
         void reset();
 

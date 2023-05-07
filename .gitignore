@@ -1,3 +1,4 @@
+# build objects
 build
 zconf.h
 zconf.h.included
@@ -12,12 +13,23 @@ zconf.h.included
 *.lib
 *.obj
 *.TMP
+# logs
 logs
+# possible thumbnails
 Thumbs.db
+# binaries
 demo/bin/x11/*
 demo/bin/windows/*
 demo/bin/win64/*
 demo/bin/win32/*
 demo/bin/osx/*
+# temp
 tmp/*
+# project files
 nbproject/*
+.idea
+# NIX
+## result from `nix build`
+result
+## result of `nix develop`
+source

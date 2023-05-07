@@ -15,13 +15,17 @@ This addon is based on the cross-platorm OSC lib [oscpack](http://www.rossbencin
 
 ## TODO :
 
-- [ ] adapt to GD Extension
-- [ ] Use IWYU
+- [X] adapt to GD Extension
+- [X] Use IWYU
 - [ ] Try to move to C++ 20
 - [ ] OSCPack dependancy update
-- [ ] Test with Godot 4 
-- [ ] Build with nix on linux
-- [ ] Build with Github Action  
+- [X] Build with nix on linux
+- [ ] Build with Github Action
+- [ ] Test with Demo
+  - [X] GDExtension detectable
+  - [X] Class Loaded and detected
+  - [ ] Send OSC
+  - [ ] Receive OSC
 
 ## contributors
 

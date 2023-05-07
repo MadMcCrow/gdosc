@@ -25,7 +25,7 @@ shlib  = env["SHLIBSUFFIX"]
 if platform in ["linuxbsd", "linux"]:
     env.Append(CCFLAGS = ['-fPIC', '-g','-O3', '-std=c++17'])
     sources.append(Glob("oscpack/ip/posix/*.cpp"))
-    library = env.SharedLibrary( f"demo/bin/libgdosc{suffix}{shlib}", source=sources)
+    library = env.SharedLibrary( f"{out_path}/libgdosc{suffix}{shlib}", source=sources)
 # MacOS build (not called darwin for some reason !)
 elif platform  == "macos":
     # these flags won't work on aarch64

@@ -1,25 +1,23 @@
-extends Object
+extends OSCReceiver
 
 var oscrcv
 
 func _ready():
-	
-	oscrcv = load("res://addons/gdosc/bin/gdOscReceiver.gdns").new()
-	# [optional] maximum number of messages in the buffer, default is 100
-	oscrcv.max_queue( 20 )
+		# [optional] maximum number of messages in the buffer, default is 100
+	max_queue( 20 )
 	# [optional]  receiver will only keeps the "latest" message for each address
-	oscrcv.avoid_duplicate( true )
+	avoid_duplicate( true )
 	# [mandatory] listening to port 14000
-	oscrcv.setup( 14000 )
+	setup( 14000 )
 	# [mandatory] starting the reception of messages
-	oscrcv.start()
+	start()
 
 func _process(delta):
 	
 	# check if there are pending messages
-	while( oscrcv.has_message() ):
+	while( has_message() ):
 		# retrieval of the messages as a dictionary
-		var msg = oscrcv.get_next()
+		var msg = get_next()
 		# printing the values, check console
 		print( "address:", msg["address"] )
 		print( "typetag:", msg["typetag"] )
@@ -31,4 +29,4 @@ func _process(delta):
 	
 func _exit_tree ( ):
 	# disable the receiver, highly recommended!
-	oscrcv.stop()
+	stop()

@@ -1,0 +1,6 @@
+[configuration]
+entry_symbol = "gdosc_library_init"
+
+[libraries]
+linux.x86_64 = "res://bin/x11/libgdosc.so"
+windows.x86_64 = "res://bin/win64/libgdosc.dll"
