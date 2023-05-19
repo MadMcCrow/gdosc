@@ -60,9 +60,7 @@
          shellHook = oldAttr.shellHook + ''
             ln -s ${godot-editor}/bin/*
             mkdir -p demo/godot/bin/x11
-            ln -s  ../../../gdosc.gdextension demo/godot/bin/gdosc.gdextension
-            scons
-            ln -s  ../../../../bin/libgdosc.linux.template_debug.x86_64.so libgdosc.so     
+            ln -s  ../../../gdosc.gdextension demo/godot/bin/gdosc.gdextension 
          '';
       });
     };

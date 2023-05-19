@@ -151,19 +151,19 @@ void OSCSender::add(godot::Variant var) {
         case godot::Variant::Type::OBJECT:
         {
             godot::String s = var;
-            godot::CharString u = s.utf8();
-            (*_packet) << u.get_data();
+            //godot::CharString u = s.utf8();
+            //(*_packet) << u.get_data();
         }
             break;
         case godot::Variant::Type::INT:
         {
-            int i = var.to_int();
+            int i = var;
             (*_packet) << i;
         }
             break;
         case godot::Variant::Type::FLOAT:
         {
-            float f = var.to_float();
+            float f = var;
             (*_packet) << f;
         }
             break;
